@@ -34,15 +34,15 @@ class Film
 
     def update()
       sql = "UPDATE films SET (
-        title,
-        price,
-        ) =
-        (
-          $1, $2,
-        )
-        WHERE id = $3"
-        values = [@title, @price, @id]
-      end
+      title,
+      price,
+      ) =
+      (
+        $1, $2,
+      )
+      WHERE id = $3"
+      values = [@title, @price, @id]
+    end
 
     def self.delete_all()
       sql = "DELETE FROM films;"
@@ -55,6 +55,15 @@ class Film
       SqlRunner.run(sql,values)
     end
 
+    def customers_with_tickets_for_film
+      sql = "SELECT customers.* FROM customers 
+      INNER JOIN tickets
+      ON tickets.customer_id = customers.id
+      WHERE film_id = $1;"
+      values = [@id]
+      results = SqlRunner.run(sql, values)
+      return results.map{ |hash| Customer.new(hash) }
+    end
 
 
   end

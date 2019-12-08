@@ -1,11 +1,10 @@
 require('pg')
 require_relative('../db/sql_runner')
 
-attr_reader :id
-attr_accessor :name, :funds
-
-
 class Customer
+
+  attr_reader :id
+  attr_accessor :name, :funds
 
   def initialize(options)
     @id = options['id'].to_i if options['id']
@@ -23,7 +22,7 @@ class Customer
       $1, $2)
       RETURNING id;"
       values = [@name, @funds]
-      star = SqlRunner.run(sql, values)[0]
+      customer = SqlRunner.run(sql, values)[0]
       @id = customer['id'].to_i
     end
 
@@ -55,6 +54,19 @@ class Customer
         values = [@id]
         SqlRunner.run(sql,values)
       end
+
+      def films_customer_has_tickets_for
+        sql = "SELECT films.* FROM films
+        INNER JOIN tickets
+        ON tickets.film_id = films.id
+        WHERE customer_id = $1;"
+        values = [@id]
+        results = SqlRunner.run(sql, values)
+        return results.map{ |hash| Film.new(hash) }
+      end
+
+
+
 
 
   end

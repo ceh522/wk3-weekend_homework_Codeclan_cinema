@@ -16,10 +16,10 @@ class Ticket
     sql = "INSERT INTO tickets
     (
       customer_id,
-      film_id,
+      film_id
     )
     VALUES(
-      $1, $2,)
+      $1, $2)
       RETURNING id;"
       values = [@customer_id, @film_id]
       tickets = SqlRunner.run(sql, values)[0]
